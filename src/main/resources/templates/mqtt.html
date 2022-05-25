@@ -115,10 +115,18 @@
                     // 客户端id
                     clientId: 'mqtt_test'
                 }
+                let i=false
+                if (this.client!=null)
+                    i  = true
                 this.client = mqtt.connect('mqtt://'+this.server+':'+this.port, options)
                 this.client.on('connect', this.connect)
                 // //订阅话题
                 // this.client.subscribe("HelloWord")
+                if (i){
+                    //订阅
+                    this.serverSubscribe()
+                }
+
                 //接收信息
                 this.client.on('message', (topic, payload, packet) => this.message(topic, payload, packet))
             },
@@ -226,6 +234,8 @@
                     inputErrorMessage: '地址格式不正确'
                 }).then(({ value }) => {
                     this.serverSet(value)
+                    // this.client.close()
+                    this.client.end()
                     this.$message({
                         type: 'success',
                         message: '已添加' + value
